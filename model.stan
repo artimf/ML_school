@@ -1,32 +1,60 @@
-python -m venv scrapy
-cd scrapy
-activate.bat
-pip install Twisted-18.9.0-cp37-cp37m-win32.whl
-pip install pywin32
-pip install scrapy
-.\scrapy startproject u5 
-.\u5>scrapy crawl u5 -o 1.xml
+//определяем тип данных для модели
 
-.\u5>del 3.xml && scrapy crawl rbt -o 3.xml   >>перезаписать файл вывода
+data{
+    int<lower=0> N; // длина обучающей выборки
+    int<lower=0> D; // количество факторов
+    int<lower=0> P; // длина тестовой выборки
+    real y[N]; // целевая переменная из обучающей выборки
+    real x[D,N+P]; // матрица факторов
+}
 
-При проблеме с кодировкой установите настройку FEED_EXPORT_ENCODING в settings.py:
-FEED_EXPORT_ENCODING = 'utf-8'
+parameters{ //задаем параметры
+    real alpha[D];//коэффициенты линейной регрессии
+    real s[N]; //сезонная составляющая
+    real sigma; //ошибка регрессии
+    real sigma2; //ошибка сезонной составляющей
+}
+
+model{ // модель представляет собой: y = (факторы * коэф) + сезонная составляющая + ошибки
+    for (i in 1:N){
+        real prd;
+        prd =0;
+        for(j in 1:D)  prd=prd+x[j,i]*alpha[j]; #
+
+        y[i]~normal(prd+s[i], sigma); //y = (факторы*коэф) + сезонность + ошибка
+    }    
+//------------Задание!!!!!!!: дописать слагаемые, описывающие сезонность----------
+//------------сумма сезонных приростов за каждый месяц в сумме должна равняться 0---------
+//   s[n] ~ Normal(s[n-11]+..+s[n-1],sigma2); 
+    
+   for (k in 12:N){           
+ //...............................................      
+
+       #s[k]~normal(...,sigma2);
+      s[k]~normal(1,sigma2);
+   }
+//---------------------------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------------------------
+
+}
+
+generated quantities{
+    real predY[N+P];
+    real predS[N+P];
+    for(k in 1:11) predS[k] = s[k];
+    for (k in 12:N+P){
+        real prd;
+        prd =0;
+        for(l in 1:11) prd=prd-predS[k-l];
+
+        predS[k] = normal_rng(prd,sigma2);
+    }
+
+    for(i in 1:N+P){
+        real prd;
+        prd =0;
+        for(j in 1:D)  prd=prd+x[j,i]*alpha[j];
+        predY[i] = prd+predS[i];
 
 
-pip install openpyxl
-https://openpyxl.readthedocs.io/en/stable/usage.html
-___________________________________
-del 3.xml && del 1.txt && scrapy crawl rbt -o 3.xml -a urlx=http://shop.rosbt.ru/product/krovat-detskaya-zhestkaya-standart-k-yaroslavl --logfile 1.txt --loglevel INFO
-
-del 3.xml && del 1.txt && scrapy crawl rbt -o 3.xml --logfile 1.txt --loglevel INFO
-scrapy runspider rbt_spider.py -o 4.xml
-
-pip freeze --local - список зависимостей проекта
-pip install -r requirements.txt
-
-git pull
-git add .
-git status
-pause
-git commit . -m "auto commit"
-git push
+    }
+}
