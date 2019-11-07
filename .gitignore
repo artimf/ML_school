@@ -15,6 +15,7 @@ libs/
 share/
 sip/
 tcl/
+*.pdf
 *.exe
 !*.bat
     

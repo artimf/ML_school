@@ -33,8 +33,8 @@ print('Множество допустимых действий',action_space)
 
 
 # Множество допустимых наград
-action_space = sorted(list(set(experience_buffer['r'])))
-print('Множество допустимых наград',action_space)
+xxx = sorted(list(set(experience_buffer['r'])))
+print('Множество допустимых наград',xxx)
 
 #####################################################################
 #Создание Q-матрицы
