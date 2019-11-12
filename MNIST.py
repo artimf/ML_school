@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import confusion_matrix
 import pylab as plt
-#%%
+#%% 
 y=digits.target
 print('print(len(y))', len(y))
 print('print(y[:20])', (y[:20]))
@@ -52,13 +52,49 @@ for index, (image,prediction) in enumerate(images_and_predictions[:8]):
     plt.imshow(image,cmap=plt.cm.gray_r,interpolation='nearest')
     plt.title('Prediction: %i' % prediction) 
 plt.show()
-#%%
+#%% pickle модель в файл
 import pickle
 filename = 'MNIST_finalized_model.sav'
 pickle.dump(fit, open(filename, 'wb'))
 loaded_model = pickle.load(open(filename, 'rb'))
 predicted=loaded_model.predict(digits.images[1].reshape(1,-1))
 print('#####',predicted) 
+#%% #scores
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test, loaded_model.predict(X_test)))
 #%%
+#methods
+#X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2)
+print("===== полученные размерности =====")
+print("X_train.shape:", X_train.shape)
+print("X_dev.shape:", X_test.shape)
+print("y_train.shape:", y_train.shape)
+print("y_dev.shape:", y_test.shape)
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier as KNN
+from sklearn.naive_bayes import GaussianNB
+rfc = RandomForestClassifier()
+lr = LogisticRegression()
+svc = SVC(kernel="linear")
+knn = KNN(n_neighbors=1)
+nb = GaussianNB()
+scores = {}
+for name, clf in [("random forest", rfc), 
+                  ("logistic regression", lr),
+                  ("SVM", svc),
+                  ("knn", knn),
+                  ("naive bayes", nb)
+                 ]:
+        if name == "xnaive bayes": 
+            b=1
+            #clf.fit(X_train.toarray(), y_train)
+            #scores[name] = accuracy_score(y_test, clf.predict(X_test.toarray()))
+        else:
+            clf.fit(X_train, y_train)
+            scores[name] = accuracy_score(y_test, clf.predict(X_test))
+        print(name, scores[name])
 """
 """
