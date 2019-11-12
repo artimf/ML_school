@@ -5,6 +5,7 @@ Created on Wed Nov  6 18:48:05 2019
 @author: F
 """
 #%%
+print(2)
 import numpy as np
 import pandas as pd
 import itertools as it
