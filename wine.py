@@ -1,39 +1,121 @@
-# -*- coding: utf-8 -*-
 """
 Created on Thu Oct 31 17:33:30 2019
 стр 99
 @author: F
+
+#from sklearn.datasets import load_wine
+#wine = load_wine()
 """
+#%%
+from sklearn.utils import Bunch
+import pylab as pl
+import numpy as np
+from os.path import dirname, exists, expanduser, isdir, join, splitext
+import csv
 
+def load_data(module_path, data_file_name):
+    with open(join(module_path, 'my', data_file_name)) as csv_file:
+        data_file = csv.reader(csv_file)
+        temp = next(data_file)
+        n_samples = int(temp[0])
+        n_features = int(temp[1])
+        target_names = np.array(temp[2:])
+        data = np.empty((n_samples, n_features))
+        target = np.empty((n_samples,), dtype=np.int)
+        print(temp)
+        print(n_samples,n_features)
+        print(target_names) 
 
-print('_----------- load_wine')
-from sklearn.datasets import load_wine
-wine = load_wine()
-print(wine.target[[10, 70, 140]]) 
-print(wine.target_names)
-print(wine.data[1])
-print(wine.feature_names)
+        for i, ir in enumerate(data_file):
+            data[i] = np.asarray(ir[:-1], dtype=np.float64)
+            target[i] = np.asarray(ir[-1], dtype=np.int)
 
+    return data, target, target_names
+
+def loadwine(return_X_y=False):
+    module_path = dirname(__file__)
+    data, target, target_names = load_data(module_path,  'wine_data.csv')
+
+    with open(join(module_path, 'my', 'wine_data.rst')) as rst_file:
+        fdescr = rst_file.read()
+
+    if return_X_y:
+        return data, target
+
+    return Bunch(data=data, target=target,
+                 target_names=target_names,
+                 DESCR=fdescr,
+                 feature_names=['alcohol',
+                                'malic_acid',
+                                'ash',
+                                'alcalinity_of_ash',
+                                'magnesium',
+                                'total_phenols',
+                                'flavanoids',
+                                'nonflavanoid_phenols',
+                                'proanthocyanins',
+                                'color_intensity',
+                                'hue',
+                                'od280/od315_of_diluted_wines',
+                                'proline'])
+#%%
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+wine = loadwine()
 n_samples = len(wine.data)
-X= wine.data.reshape((n_samples,-1)) 
+ 
 y=wine.target
+X= wine.data.reshape((n_samples,-1))
+#%%
 X_train, X_test, y_train, y_test = train_test_split(X,y,random_state=0)
-gnb = GaussianNB()
-fit=gnb.fit(X_train,y_train)
-predicted=fit.predict(X_test) 
+#methods
+print("===== полученные размерности =====")
+print("X_train.shape:", X_train.shape)
+print("X_test.shape:", X_test.shape)
+print("y_train.shape:", y_train.shape)
+print("y_test.shape:", y_test.shape)
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier as KNN
+from sklearn.naive_bayes import GaussianNB
+rfc = RandomForestClassifier()
+lr = LogisticRegression()
+svc = SVC(kernel="linear")
+knn = KNN(n_neighbors=1)
+nb = GaussianNB()
+scores = {}
+for name, clf in [("random forest", rfc), 
+                  ("logistic regression", lr),
+                  ("SVM", svc),
+                  ("knn", knn),
+                  ("naive bayes", nb)
+                 ]:
+        if name == "xnaive bayes": 
+            b=1
+            #clf.fit(X_train.toarray(), y_train)
+            #scores[name] = accuracy_score(y_test, clf.predict(X_test.toarray()))
+        else:
+            clf.fit(X_train, y_train)
+            scores[name] = accuracy_score(y_test, clf.predict(X_test))
+        print(name, scores[name])
+#%% 
+for k, v in scores.items(): print(k, v)
+max_scores = dict([max(scores.items(), key=lambda k_v: k_v[1])])
+print('best',max_scores)
+
+from sklearn.metrics import confusion_matrix
+fit=rfc.fit(X_train,y_train)
+predicted=fit.predict(X_test)
 confusion_matrix(y_test,predicted)
 print(confusion_matrix(y_test,predicted))
+
 print('сумма всех предсказаний ',confusion_matrix(y_test,predicted).sum())#сумма всех предсказаний
 print('количесвто верных предсказаний ',confusion_matrix(y_test,predicted).trace())#количесвто верных предсказаний
 
-pp=np.array([13.27,4.28,2.26,20,120,1.59,0.69,0.43,1.35,10.2,0.59,1.56,835]).reshape(1,-1)
-print('>>>>',fit.predict(pp))
-
-#for key,value in wine.items():
-#    print(key,'\n',value,'\n')
-print('data.shape\t',wine['data'].shape,
-      '\ntarget.shape \t',wine['target'].shape)
-
+#%%
 import pandas as pd
 features = pd.DataFrame(data=wine['data'],columns=wine['feature_names'])
 data = features
@@ -41,18 +123,19 @@ data['target']=wine['target']
 data['class']=data['target'].map(lambda ind: wine['target_names'][ind])
 print(data.head())
 print(data.describe())
-import seaborn as sns
-sns.distplot(data['alcohol'],kde=0)
 
+import seaborn as sns
+print(wine['feature_names'])
+print(data.target.unique())
 import matplotlib.pyplot as pltx
 for i in data.target.unique():
-    sns.distplot(data['alcohol'][data.target==i],
-                 kde=1,label='{}'.format(i))
+    sns.distplot(data['magnesium'][data.target==i],kde=1,label='{}'.format(i))
 pltx.legend()
+pltx.show()
 
 import matplotlib.gridspec as gridspec
 for feature in wine['feature_names']:
-    if feature=='proline':
+    if feature=='magnesium':
         print(feature)
         #sns.boxplot(data=data,x=data.target,y=data[feature])
         gs1 = gridspec.GridSpec(3,1)
@@ -66,6 +149,5 @@ for feature in wine['feature_names']:
         ax2.yaxis.label.set_visible(False)
         ax1.xaxis.set_visible(False)
         pltx.show()
-#images_and_predictions = list(zip(wine.data,fit.predict(X)))
-#for index, (image,prediction) in enumerate(images_and_predictions[2:6]):
-#    print(image.reshape(1,-1),';', str(prediction))
+
+#%%

@@ -115,3 +115,58 @@ for index, (image,prediction) in enumerate(images_and_predictions[:8]):
     plt.imshow(image,cmap=plt.cm.gray_r,interpolation='nearest')
     plt.title('Prediction: %i' % prediction) 
 plt.show()
+#%%Локальная функция загрузки данных
+from os.path import dirname, exists, expanduser, isdir, join, splitext
+from sklearn.utils import Bunch
+def loaddigits2(n_class=10, return_X_y=False):
+    module_path = dirname(__file__)
+    data = np.loadtxt(join(module_path, 'my', 'digits.csv.gz'),
+                          delimiter=',')
+    with open(join(module_path, 'my', 'digits.rst')) as f:
+        descr = f.read()
+    target = data[:, -1].astype(np.int, copy=False)
+    print('>>>',len(target))
+    #0,0,5,13,9,1,0,0,0,0,13,15,10,15,5,0,0,3,15,2,0,11,8,0,0,4,12,0,0,8,8,0,0,5,8,0,0,9,8,0,0,4,11,0,1,12,7,0,0,2,14,5,10,12,0,0,0,0,6,13,10,0,0,0,0
+
+    flat_data = data[:, :-1]
+    images = flat_data.view()
+    images.shape = (-1, 8, 8)
+
+    if n_class < 10:
+        idx = target < n_class
+        flat_data, target = flat_data[idx], target[idx]
+        images = images[idx]
+
+    if return_X_y:
+        return flat_data, target
+
+    return Bunch(data=flat_data,
+                 target=target,
+                 target_names=np.arange(10),
+                 images=images,
+                 DESCR=descr)
+
+#%%
+digits2 = loaddigits2()
+n_samples = len(digits2.images)
+ 
+y=digits2.target
+X= digits2.images.reshape((n_samples,-1))
+X_train, X_test, y_train, y_test = train_test_split(X,y,random_state=0)
+ 
+gnb = KNN(n_neighbors=1)#GaussianNB()
+fit=gnb.fit(X_train,y_train)
+predicted=fit.predict(X_test)
+confusion_matrix(y_test,predicted)
+print(confusion_matrix(y_test,predicted))
+
+print('сумма всех предсказаний ',confusion_matrix(y_test,predicted).sum())#сумма всех предсказаний
+print('количесвто верных предсказаний ',confusion_matrix(y_test,predicted).trace())#количесвто верных предсказаний
+images_and_predictions = list(zip(digits2.images,fit.predict(X)))
+for index, (image,prediction) in enumerate(images_and_predictions[:8]):
+    plt.subplot(6,3,index+5)
+    plt.axis('off')
+    plt.imshow(image,cmap=plt.cm.gray_r,interpolation='nearest')
+    plt.title('Prediction: %i' % prediction) 
+plt.show()
+#%%
