@@ -5,6 +5,8 @@ Created on Thu Oct 31 17:33:30 2019
 @author: F
 """
 #%%
+from warnings import simplefilter# import warnings filter
+simplefilter(action='ignore', category=FutureWarning)# ignore all future warnings
 from sklearn.datasets import load_digits
 import pylab as pl
 #%%
@@ -37,8 +39,8 @@ gnb = GaussianNB()
 fit=gnb.fit(X_train,y_train)
 predicted=fit.predict(X_test)
 #print('###',fit.predict(digits.images[44].reshape(1,-1)))
-print('print(y_test)',y_test)
-print('print(predicted)',predicted)
+#print('print(y_test)',y_test)
+#print('print(predicted)',predicted)
 #%%
 confusion_matrix(y_test,predicted)
 print(confusion_matrix(y_test,predicted))
@@ -67,9 +69,9 @@ print(accuracy_score(y_test, loaded_model.predict(X_test)))
 #X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2)
 print("===== полученные размерности =====")
 print("X_train.shape:", X_train.shape)
-print("X_dev.shape:", X_test.shape)
+print("X_test.shape:", X_test.shape)
 print("y_train.shape:", y_train.shape)
-print("y_dev.shape:", y_test.shape)
+print("y_test.shape:", y_test.shape)
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
@@ -96,5 +98,20 @@ for name, clf in [("random forest", rfc),
             clf.fit(X_train, y_train)
             scores[name] = accuracy_score(y_test, clf.predict(X_test))
         print(name, scores[name])
-"""
-"""
+#%%
+clf =KNN(n_neighbors=1)
+fit=clf.fit(X_train,y_train)
+predicted=fit.predict(X_test)
+confusion_matrix(y_test,predicted)
+print(confusion_matrix(y_test,predicted))
+print(accuracy_score(y_test, fit.predict(X_test)))
+print(confusion_matrix(y_test,predicted).sum())#сумма всех предсказаний
+print(confusion_matrix(y_test,predicted).trace())#количесвто верных предсказаний
+#%%
+images_and_predictions = list(zip(digits.images,fit.predict(X)))
+for index, (image,prediction) in enumerate(images_and_predictions[:8]):
+    plt.subplot(6,3,index+5)
+    plt.axis('off')
+    plt.imshow(image,cmap=plt.cm.gray_r,interpolation='nearest')
+    plt.title('Prediction: %i' % prediction) 
+plt.show()
