@@ -2,7 +2,7 @@
 Created on Thu Oct 31 17:33:30 2019
 стр 99
 @author: F
-
+Контролируемое обучение
 #from sklearn.datasets import load_wine
 #wine = load_wine()
 """
@@ -14,7 +14,7 @@ from os.path import dirname, exists, expanduser, isdir, join, splitext
 import csv
 
 def load_data(module_path, data_file_name):
-    with open(join(module_path, 'my', data_file_name)) as csv_file:
+    with open(join(module_path, 'data', data_file_name)) as csv_file:
         data_file = csv.reader(csv_file)
         temp = next(data_file)
         n_samples = int(temp[0])
@@ -24,7 +24,7 @@ def load_data(module_path, data_file_name):
         target = np.empty((n_samples,), dtype=np.int)
         print(temp)
         print(n_samples,n_features)
-        print(target_names) 
+        print(target_names)  
 
         for i, ir in enumerate(data_file):
             data[i] = np.asarray(ir[:-1], dtype=np.float64)
@@ -36,7 +36,7 @@ def loadwine(return_X_y=False):
     module_path = dirname(__file__)
     data, target, target_names = load_data(module_path,  'wine_data.csv')
 
-    with open(join(module_path, 'my', 'wine_data.rst')) as rst_file:
+    with open(join(module_path, 'data', 'wine_data.rst')) as rst_file:
         fdescr = rst_file.read()
 
     if return_X_y:
@@ -58,7 +58,7 @@ def loadwine(return_X_y=False):
                                 'hue',
                                 'od280/od315_of_diluted_wines',
                                 'proline'])
-#%%
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
@@ -117,6 +117,7 @@ print('количесвто верных предсказаний ',confusion_ma
 
 #%%
 import pandas as pd
+import pylab as plt
 features = pd.DataFrame(data=wine['data'],columns=wine['feature_names'])
 data = features
 data['target']=wine['target']

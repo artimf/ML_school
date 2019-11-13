@@ -2,6 +2,7 @@
 """
 Created on Thu Oct 31 17:33:30 2019
 стр 99
+Контролируемое обучение
 @author: F
 """
 #%%
@@ -120,9 +121,9 @@ from os.path import dirname, exists, expanduser, isdir, join, splitext
 from sklearn.utils import Bunch
 def loaddigits2(n_class=10, return_X_y=False):
     module_path = dirname(__file__)
-    data = np.loadtxt(join(module_path, 'my', 'digits.csv.gz'),
+    data = np.loadtxt(join(module_path, 'data', 'digits.csv.gz'),
                           delimiter=',')
-    with open(join(module_path, 'my', 'digits.rst')) as f:
+    with open(join(module_path, 'data', 'digits.rst')) as f:
         descr = f.read()
     target = data[:, -1].astype(np.int, copy=False)
     print('>>>',len(target))
