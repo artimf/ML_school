@@ -35,6 +35,9 @@ hidenVar=pd.DataFrame(results.components_, columns=list(
 
 print(hidenVar)
 print(list(hidenVar))
+print((hidenVar.iloc[0:1]).sum())
+print((hidenVar.iloc[0:1]).sum().sum(
+        ))
 
 #%%
 #прогнозирование качества вина до применнеия анализа главных компонент
@@ -50,7 +53,6 @@ print('сумма всех предсказаний ',confusion_matrix(pred,y).s
 print('количесвто верных предсказаний ',confusion_matrix(pred,y).trace())#количесвто верных предсказаний
 print(accuracy_score(pred, y))
 #%%
-#%%
 #прогнозирование качества вина с наращиванием количества гланых компонент
 predicted_correct =[]
 for i in range(1,10):
@@ -60,7 +62,23 @@ for i in range(1,10):
     fit=gnb.fit(Z,y)
     pred=fit.predict(Z)
     predicted_correct.append(confusion_matrix(pred,y).trace())
-    print(predicted_correct)
+    print(predicted_correct,accuracy_score(pred, y))
 plt.plot(predicted_correct)
 plt.show()
+#%%
+
+
+predicted_correct =[]
+for i in range(1,2):
+    model=PCA(n_components=i)
+    results=model.fit(X)
+    Z=results.transform(X)
+    fit=gnb.fit(Z,y)
+    print(len(Z))
+    predicted_correct.append(confusion_matrix(pred,y).trace())
+    print(predicted_correct,accuracy_score(pred, y))
+plt.plot(predicted_correct)
+plt.show()
+#predicted=loaded_model.predict(digits.images[1].reshape(1,-1))
+#print('#####',predicted) 
 #%%
