@@ -33,7 +33,7 @@ def load_data(module_path, data_file_name):
     return data, target, target_names
 
 def loadwine(return_X_y=False):
-    module_path = dirname(__file__)
+    module_path = 'C:/Anaconda3/envs/test/my'#dirname(__file__)
     data, target, target_names = load_data(module_path,  'wine_data.csv')
 
     with open(join(module_path, 'data', 'wine_data.rst')) as rst_file:
