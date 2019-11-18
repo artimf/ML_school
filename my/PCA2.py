@@ -134,14 +134,13 @@ plt.show()
  
 
 #Без pca
-X_centered = X - X.mean(axis=0)  
-X_pca =   (X_centered) 
+X_pca =(X) 
 # И нарисуем получившиеся точки в нашем новом пространстве
 plt.plot(X_pca[y == 3, 0], X_pca[y == 3, 1], 'bo', label='3')
 plt.plot(X_pca[y == 4, 0], X_pca[y == 4, 1], 'go', label='4')
 plt.plot(X_pca[y == 5, 0], X_pca[y == 5, 1], 'ro', label='5')
-plt.plot(X_pca[y == 6, 0], X_pca[y == 6, 1], 'bo', label='6')
-plt.plot(X_pca[y == 7, 0], X_pca[y == 7, 1], 'go', label='7')
+plt.plot(X_pca[y == 6, 0], X_pca[y == 6, 1], 'yo', label='6')
+plt.plot(X_pca[y == 7, 0], X_pca[y == 7, 1], 'bo', label='7')
 plt.plot(X_pca[y == 8, 0], X_pca[y == 8, 1], 'ro', label='8')
 plt.legend(loc=0);
 plt.show()
@@ -154,12 +153,12 @@ X_pca = pca.transform(X_centered)
 plt.plot(X_pca[y == 3, 0], X_pca[y == 3, 1], 'bo', label='3')
 plt.plot(X_pca[y == 4, 0], X_pca[y == 4, 1], 'go', label='4')
 plt.plot(X_pca[y == 5, 0], X_pca[y == 5, 1], 'ro', label='5')
-plt.plot(X_pca[y == 6, 0], X_pca[y == 6, 1], 'bo', label='6')
-plt.plot(X_pca[y == 7, 0], X_pca[y == 7, 1], 'go', label='7')
+plt.plot(X_pca[y == 6, 0], X_pca[y == 6, 1], 'yo', label='6')
+plt.plot(X_pca[y == 7, 0], X_pca[y == 7, 1], 'bo', label='7')
 plt.plot(X_pca[y == 8, 0], X_pca[y == 8, 1], 'ro', label='8')
 plt.legend(loc=0);
  
-#%%# Повторим то же самое разбиение на валидацию и тренировочную выборку.
+# Повторим то же самое разбиение на валидацию и тренировочную выборку.
 X_train, X_test, y_train, y_test = train_test_split(X_pca, y, test_size=.3,  stratify=y )
 
 #clf = DecisionTreeClassifier(max_depth=2, random_state=42)
