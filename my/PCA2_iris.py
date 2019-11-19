@@ -80,7 +80,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_pca, y, test_size=.3,
                                                     random_state=42)
 
 clf = DecisionTreeClassifier(max_depth=2, random_state=42)
-clf.fit(X_train, y_train)
+clf.fit(X_train, y_train) 
 preds = clf.predict_proba(X_test)
 print('Accuracy: {:.5f}'.format(accuracy_score(y_test, preds.argmax(axis=1))))
 #%%Посмотрим на 2 главные компоненты в последнем PCA-представлении данных 

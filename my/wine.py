@@ -7,6 +7,8 @@ Created on Thu Oct 31 17:33:30 2019
 #wine = load_wine()
 """
 #%%
+from warnings import simplefilter# import warnings filter
+simplefilter(action='ignore', category=FutureWarning)# ignore all future warnings
 from sklearn.utils import Bunch
 import pylab as pl
 import numpy as np

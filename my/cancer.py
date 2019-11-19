@@ -26,7 +26,6 @@ y=data.target
 X=data.data.reshape((n_samples,-1))
 print(list(data.target_names) )
 #%%
-#%%
 X_train, X_test, y_train, y_test = train_test_split(X,y,random_state=0)
 #methods
 print("===== полученные размерности =====")
@@ -62,7 +61,6 @@ for name, clf in [("random forest", rfc),
         print(name, scores[name])
 max_scores = dict([max(scores.items(), key=lambda k_v: k_v[1])])
 print('best',max_scores)
-#%%
 
 #%%  
 
