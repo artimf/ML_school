@@ -44,25 +44,18 @@ class preceptron():
             error_count += 1
             for index, value in enumerate(X):
                 self.weights[index] += self.learning_rate *error *value
-                print('###',X,y,';',self.weights[index],'+|',self.learning_rate ,error ,value,'=',self.weights[index]+self.learning_rate *error *value )
+                print('###',X,y,';',self.weights[index],'+|',self.learning_rate ,error ,value,'=',self.weights[index]+self.learning_rate *error *value,'wghts=',self.weights )
         return error_count
 
     def predict(self,X): 
-        print('>>>>>',X,self.weights,np.dot(X,self.weights),self.threshold)
+        print('>>>>>',X,self.weights,np.dot(X,self.weights))
         return int(np.dot(X,self.weights)>self.threshold)
-# %
+#%%
 X=[(1,0,0),(1,1,0),(1,1,1),(1,1,1),(1,0,1),(1,0,1)]
 y=[1,1,0,0,1,1]
 
 p=preceptron(X,y)
-p.initialize()
+p.initialize() 
 p.train()
 print(p.predict((1,1,1)))
-print(p.predict((1,0,1)))
-
-#%%
-
->>>>> (1, 1, 1) [ 0.8 -0.2 -0.1] 0.4999999999999999 0.5
-0
->>>>> (1, 0, 1) [ 0.8 -0.2 -0.1] 0.7 0.5
-1
+print(p.predict((1,0,1))) 
