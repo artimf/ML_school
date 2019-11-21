@@ -39,16 +39,18 @@ class preceptron():
     def train_observation(self,X,y,error_count):
         result = np.dot(X,self.weights)>self.threshold
         error= y-result
+        print('error',y,'-',result,'=',y-result,'|',X,'*',self.weights,'=',np.dot(X,self.weights))
         if error !=0:
             error_count += 1
             for index, value in enumerate(X):
-                self.weights[index] += self.learning_rate *error *value 
+                self.weights[index] += self.learning_rate *error *value
+                print('###',X,y,';',self.weights[index],'+|',self.learning_rate ,error ,value,'=',self.weights[index]+self.learning_rate *error *value )
         return error_count
 
     def predict(self,X): 
         print('>>>>>',X,self.weights,np.dot(X,self.weights),self.threshold)
         return int(np.dot(X,self.weights)>self.threshold)
-#%%
+# %
 X=[(1,0,0),(1,1,0),(1,1,1),(1,1,1),(1,0,1),(1,0,1)]
 y=[1,1,0,0,1,1]
 
