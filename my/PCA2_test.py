@@ -62,6 +62,7 @@ print(X[1,:])
 
 #%%
 X_reduced = X#pca.fit_transform(X)
+print(X_reduced[:, 0])
 print(X_reduced[:, 1])
 
 plt.figure(figsize=(12,10))
@@ -97,7 +98,7 @@ X_tsne = tsne.fit_transform(X)
 plt.figure(figsize=(12,10))
 plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, 
             edgecolor='none', alpha=0.7, s=40,
-            cmap=plt.cm.get_cmap('nipy_spectral', 10))
+            cmap=plt.cm.get_cmap('nipy_spectral', 6))
 plt.colorbar()
 plt.title('iris. t-SNE projection')
 #%%На практике, как правило, выбирают столько главных компонент, 
