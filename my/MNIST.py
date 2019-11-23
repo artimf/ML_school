@@ -117,6 +117,9 @@ for index, (image,prediction) in enumerate(images_and_predictions[:8]):
     plt.title('Prediction: %i' % prediction) 
 plt.show()
 #%%Локальная функция загрузки данных
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier as KNN
+from sklearn.metrics import confusion_matrix
 from os.path import dirname, exists, expanduser, isdir, join, splitext
 from sklearn.utils import Bunch
 def loaddigits2(n_class=10, return_X_y=False):
